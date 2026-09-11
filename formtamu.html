@@ -235,7 +235,7 @@
         <h2 class="card-title">Nama Mempelai</h2>
         <div class="mb-3">
             <label for="inputPriaWanita" class="form-label">Nama Mempelai (akan muncul di undangan)</label>
-            <input type="text" class="form-control" id="inputPriaWanita" value="Tantri dan Torik" disabled>
+            <input type="text" class="form-control" id="inputPriaWanita" value="Fulanah dan Fulan" disabled>
         </div>
     </div>
 
@@ -309,7 +309,7 @@
         const MESSAGE_TEMPLATE = "Bismillahirrahmanirrahim\n\nDengan memohon rahmat dan ridho Allah Subhanahu Wa Ta'ala, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri *Resepsi Pernikahan*.\n\nBerikut link undangan kami, untuk info lengkap acara dapat dikunjungi di:\n\n{{link}}\n\nMerupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir serta memberikan Doa dan Restunya kepada kami.\n\nAtas kehadiran dan doanya kami ucapkan terima kasih.\n\nWassalamualaikum Warahmatullahi Wabarakatuh\n\nHormat kami,\n{{mempelai}}";
         // Base link undangan (isi dari form "Link GitHub Pages" di builder). Jika dikosongkan saat
         // build, dikembalikan ke lokasi formtamu.html ini sendiri (relatif), supaya tetap otomatis benar.
-        const GITHUB_LINK = "https://puade.github.io/tes-tess";
+        const GITHUB_LINK = "https://rockyhilala.github.io/tes-tess";
         
         // State: jumlah baris awal = 5
         let guestCount = 0;
@@ -403,7 +403,7 @@
             copyBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const namaTamu = inputField.value.trim();
-                const namaMempelai = namaMempelaiInput.value.trim() || "Tantri dan Torik"; // fallback
+                const namaMempelai = namaMempelaiInput.value.trim() || "Fulanah dan Fulan"; // fallback
                 
                 if (!namaTamu) {
                     alert('Silakan isi nama tamu terlebih dahulu.');
