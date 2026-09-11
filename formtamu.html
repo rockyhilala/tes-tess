@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Undangan Multi Tamu + Copy</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --card-border: #333;
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --text-color: #e0e0e0;
+            --text-muted: #aaa;
+            --input-bg: #2a2a2a;
+            --input-border: #444;
+            --success-bg: #1e4a2a; /* latar hijau gelap untuk feedback */
+        }
+        
+        body {
+            margin-top: 30px;
+            margin-bottom: 100px;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .container {
+            max-width: 700px;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            color: var(--text-muted);
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+        
+        /* Input group styling */
+        .guest-row {
+            background-color: var(--input-bg);
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--input-border);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .guest-row.success {
+            background-color: var(--success-bg);
+            border-color: var(--secondary-color);
+        }
+        
+        .guest-input {
+            flex: 1;
+            background-color: transparent;
+            border: none;
+            color: var(--text-color);
+            padding: 8px 5px;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        .guest-input::placeholder {
+            color: #777;
+            font-style: italic;
+        }
+        
+        .action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .action-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .action-btn.clear:hover {
+            color: #e74c3c;
+        }
+        
+        .action-btn.copy:hover {
+            color: var(--secondary-color);
+        }
+        
+        .btn-add {
+            background-color: transparent;
+            border: 1px dashed var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px;
+            border-radius: 50px;
+            width: 100%;
+            font-weight: 500;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            transition: 0.2s;
+        }
+        
+        .btn-add:hover {
+            background-color: rgba(52,152,219,0.1);
+            border-style: solid;
+        }
+        
+        .form-label {
+            color: var(--text-color);
+            font-weight: 500;
+        }
+        
+        #inputPriaWanita {
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-color);
+        }
+        
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(30, 30, 30, 0.95);
+            border-top: 1px solid var(--card-border);
+            padding: 15px 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        /* popup tutorial (copy style dari sebelumnya) */
+        .popup-form {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+        }
+        
+        .popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .popup-content h5 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .divider {
+            border-top: 1px solid var(--card-border);
+            margin: 25px 0;
+        }
+        
+        /* Hilangkan output area karena tidak perlu ditampilkan */
+        #outputArea {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+ 
+<div class="container">
+    <!-- Nama Mempelai -->
+    <div class="card">
+        <h2 class="card-title">Nama Mempelai</h2>
+        <div class="mb-3">
+            <label for="inputPriaWanita" class="form-label">Nama Mempelai (akan muncul di undangan)</label>
+            <input type="text" class="form-control" id="inputPriaWanita" value="Tantri dan Torik" disabled>
+        </div>
+    </div>
+
+        <!-- Tombol tutorial (tetap ada) -->
+        <div class="d-flex gap-2 mb-4">
+            <button id="tutorialButton" class="btn btn-success w-100">
+                <i class="bi bi-play-circle"></i> Tutorial
+            </button>
+        </div>
+    
+    <!-- Area Input Tamu Undangan dengan Multi Baris -->
+    <div class="card">
+        <h2 class="card-title">Nama Tamu Undangan</h2>
+        <p class="subtitle">Klik ikon <i class="bi bi-files"></i> untuk menyalin undangan ke clipboard. Baris akan hijau jika sukses.</p>
+        
+        <!-- Container untuk semua baris input tamu -->
+        <div id="guestsContainer"></div>
+        
+        <!-- Tombol tambah tamu -->
+        <button id="addGuestBtn" class="btn-add">
+            <i class="bi bi-plus-circle"></i> + Tambah Tamu
+        </button>
+        
+        <!-- Catatan: Tidak ada tombol "Buat Undangan" global karena setiap baris punya tombol copy masing-masing -->
+        <div class="text-muted small mt-2">
+            <i class="bi bi-info-circle"></i> Setiap baris berdiri sendiri. Klik icon <i class="bi bi-files"></i> untuk salin undangan dengan nama tamu itu.
+        </div>
+    </div>
+    
+    <div class="divider"></div>
+    
+
+</div>
+
+<!-- Popup Tutorial -->
+<div id="popupTutorial" class="popup-form">
+    <div class="popup-content">
+        <h5>Cara Menggunakan Form Undangan</h5>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/1BvXNlsPwFc" 
+                    title="Tutorial" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
+        </div>
+        <p class="text-center" style="color: var(--text-muted); font-size: 0.9rem;">
+            Tonton video di atas untuk panduan lengkap.
+        </p>
+        <button id="closeTutorial" class="btn btn-secondary w-100">Tutup</button>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <span>Copyright : <b>Puade Hub</b></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // Elemen-elemen utama
+        const guestsContainer = document.getElementById('guestsContainer');
+        const addGuestBtn = document.getElementById('addGuestBtn');
+        const namaMempelaiInput = document.getElementById('inputPriaWanita');
+
+        // Template pesan WhatsApp & nama mempelai — diisi otomatis oleh builder saat unduh ZIP
+        const MESSAGE_TEMPLATE = "Bismillahirrahmanirrahim\n\nDengan memohon rahmat dan ridho Allah Subhanahu Wa Ta'ala, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri *Resepsi Pernikahan*.\n\nBerikut link undangan kami, untuk info lengkap acara dapat dikunjungi di:\n\n{{link}}\n\nMerupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir serta memberikan Doa dan Restunya kepada kami.\n\nAtas kehadiran dan doanya kami ucapkan terima kasih.\n\nWassalamualaikum Warahmatullahi Wabarakatuh\n\nHormat kami,\n{{mempelai}}";
+        // Base link undangan (isi dari form "Link GitHub Pages" di builder). Jika dikosongkan saat
+        // build, dikembalikan ke lokasi formtamu.html ini sendiri (relatif), supaya tetap otomatis benar.
+        const GITHUB_LINK = "https://puade.github.io/tes-tess";
+        
+        // State: jumlah baris awal = 5
+        let guestCount = 0;
+        
+        // Fungsi untuk membuat format nama (kapital tiap kata dan gabung dengan '+')
+        function formatNamaForURL(nama) {
+            if (!nama.trim()) return '';
+            return nama
+                .trim()
+                .split(/\s+/)  // pisah berdasarkan spasi
+                .map(kata => kata.charAt(0).toUpperCase() + kata.slice(1).toLowerCase())
+                .join('+');
+        }
+        
+        // Fungsi untuk menghasilkan teks undangan berdasarkan nama tamu dan nama mempelai
+        // Link diambil dari GITHUB_LINK (form "Link GitHub Pages" di builder). Jika kosong,
+        // dibuat relatif terhadap lokasi formtamu.html ini sendiri sebagai fallback.
+        function generateUndanganText(namaTamu, namaMempelai) {
+            const formattedNama = formatNamaForURL(namaTamu) || 'Tamu+Undangan'; // fallback jika kosong
+            const base = GITHUB_LINK ? GITHUB_LINK.replace(/\/+$/, '') + '/' : 'index.html';
+            const link = new URL(base + '?kepada=' + formattedNama, window.location.href).href;
+
+            return MESSAGE_TEMPLATE
+                .replace(/\{\{link\}\}/g, link)
+                .replace(/\{\{mempelai\}\}/g, namaMempelai);
+        }
+        
+        // Fungsi untuk menyalin teks ke clipboard
+        function copyTextToClipboard(text, rowElement) {
+            if (!text) return false;
+            
+            // Buat textarea sementara
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    // Feedback: tambah class success ke row, lalu hilangkan setelah 1.5 detik?
+                    rowElement.classList.add('success');
+                    // Hapus class setelah 1 detik agar user lihat hijau, lalu kembali normal
+                    setTimeout(() => {
+                        rowElement.classList.remove('success');
+                    }, 1000);
+                }
+                document.body.removeChild(textArea);
+                return successful;
+            } catch (err) {
+                document.body.removeChild(textArea);
+                return false;
+            }
+        }
+        
+        // Fungsi untuk membuat satu baris input tamu (dengan tombol X dan Copy)
+        function createGuestRow(initialValue = '') {
+            const rowId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+            
+            // Elemen utama row
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'guest-row';
+            rowDiv.dataset.rowId = rowId;
+            
+            // Input field
+            const inputField = document.createElement('input');
+            inputField.type = 'text';
+            inputField.className = 'guest-input';
+            inputField.placeholder = 'Contoh: Fulan Bersama Istri';
+            inputField.value = initialValue;
+            
+            // Tombol Clear (X)
+            const clearBtn = document.createElement('button');
+            clearBtn.className = 'action-btn clear';
+            clearBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+            clearBtn.title = 'Hapus input';
+            clearBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                inputField.value = '';
+                inputField.focus();
+                // Hapus juga class success jika ada
+                rowDiv.classList.remove('success');
+            });
+            
+            // Tombol Copy (📄) - menggunakan ikon bi-files
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'action-btn copy';
+            copyBtn.innerHTML = '<i class="bi bi-files"></i>';
+            copyBtn.title = 'Salin undangan untuk nama ini';
+            
+            copyBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const namaTamu = inputField.value.trim();
+                const namaMempelai = namaMempelaiInput.value.trim() || "Tantri dan Torik"; // fallback
+                
+                if (!namaTamu) {
+                    alert('Silakan isi nama tamu terlebih dahulu.');
+                    inputField.focus();
+                    return;
+                }
+                
+                const undanganText = generateUndanganText(namaTamu, namaMempelai);
+                const success = copyTextToClipboard(undanganText, rowDiv);
+                
+                if (success) {
+                    // Feedback tambahan: sudah diatur di copyTextToClipboard lewat class
+                    // Tapi kita bisa menampilkan notifikasi kecil jika mau
+                } else {
+                    alert('Gagal menyalin teks. Coba lagi.');
+                }
+            });
+            
+            // Susun elemen
+            rowDiv.appendChild(inputField);
+            rowDiv.appendChild(clearBtn);
+            rowDiv.appendChild(copyBtn);
+            
+            return rowDiv;
+        }
+        
+        // Fungsi untuk menambahkan baris baru ke container
+        function addNewGuestRow(initialValue = '') {
+            const newRow = createGuestRow(initialValue);
+            guestsContainer.appendChild(newRow);
+            guestCount++;
+        }
+        
+        // Inisialisasi: buat 5 baris kosong
+        for (let i = 0; i < 5; i++) {
+            addNewGuestRow('');
+        }
+        
+        // Event listener untuk tombol "+ Tambah Tamu"
+        addGuestBtn.addEventListener('click', function() {
+            addNewGuestRow('');
+        });
+        
+        // ===== TUTORIAL POPUP (sama seperti asli) =====
+        const popup = document.getElementById('popupTutorial');
+        const tutorialBtn = document.getElementById('tutorialButton');
+        const closeBtn = document.getElementById('closeTutorial');
+        
+        tutorialBtn.addEventListener('click', function() {
+            popup.style.display = 'block';
+        });
+        
+        closeBtn.addEventListener('click', function() {
+            popup.style.display = 'none';
+        });
+        
+        popup.addEventListener('click', function(e) {
+            if (e.target === popup) {
+                popup.style.display = 'none';
+            }
+        });
+        
+        // Opsional: mengisi inputPriaWanita sudah di-set via value, tidak perlu window.onload
+        // Tapi jika ingin dipastikan, bisa juga:
+        window.addEventListener('load', function() {
+            // sudah ada value "Anisa dan Arul" di html
+        });
+        
+    })();
+</script>
+
+<!-- Bootstrap JS (optional, untuk beberapa komponen) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
